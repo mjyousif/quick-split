@@ -46,12 +46,12 @@ function listReducer(list: Entry[], action: Action): Entry[] {
   }
 }
 
-const calculateTotalAmount = (entries: Entry[]): number =>
+const calculateSubtotalAmount = (entries: Entry[]): number =>
   entries.reduce((accumulator, current) => accumulator + current.amount, 0);
 
 let id = 1;
 const App = () => {
-  const [total, setTotal] = useState(0);
+  const [subtotal, setSubtotal] = useState(0);
   const [tax, setTax] = useState(0);
   const [tip, setTip] = useState(0);
 
@@ -78,8 +78,8 @@ const App = () => {
   }
 
   useEffect(() => {
-    const newTotal = calculateTotalAmount(entries);
-    setTotal(newTotal);
+    const newSubtotal = calculateSubtotalAmount(entries);
+    setSubtotal(newSubtotal);
   }, [entries]);
 
   return (
@@ -98,15 +98,18 @@ const App = () => {
           onDeleteEntry={deleteEntry}
         />
         <TotalFields
-          total={total}
-          onSetTotal={setTotal}
+          totals={{ subtotal, tax, tip }}
+          onSetSubtotal={setSubtotal}
           onSetTax={setTax}
           onSetTip={setTip}
         />
-        <PersonalProportions entries={entries} totals={{ total, tax, tip }} />
+        <PersonalProportions
+          entries={entries}
+          totals={{ total: subtotal, tax, tip }}
+        />
       </Container>
       <div>{JSON.stringify(entries)}</div>
-      <div>{total}</div>
+      <div>{subtotal}</div>
     </>
   );
 };
@@ -144,15 +147,15 @@ const PersonalProportions = (props: { entries: Entry[]; totals: any }) => {
 };
 
 const TotalFields = (props: {
-  total: number;
-  onSetTotal: (value: number) => void;
+  totals: any;
+  onSetSubtotal: (value: number) => void;
   onSetTax: (value: number) => void;
   onSetTip: (value: number) => void;
 }) => {
-  const { total, onSetTotal, onSetTax, onSetTip } = props;
+  const { totals, onSetSubtotal, onSetTax, onSetTip } = props;
 
-  const onChangeTotal = (value: string) => {
-    onSetTotal(Number(value));
+  const onChangeSubtotal = (value: string) => {
+    onSetSubtotal(Number(value));
   };
   const onChangeTax = (value: string) => {
     onSetTax(Number(value));
@@ -165,14 +168,14 @@ const TotalFields = (props: {
     <Stack>
       <TextField
         variant="standard"
-        placeholder="Total"
+        placeholder="Subtotal"
         type="number"
         InputProps={{
           readOnly: true,
           startAdornment: <InputAdornment position="start">$</InputAdornment>,
         }}
-        value={total}
-        onChange={(e) => onChangeTotal(e.target.value)}
+        value={totals.subtotal}
+        onChange={(e) => onChangeSubtotal(e.target.value)}
       />
       <TextField
         variant="standard"
@@ -189,6 +192,16 @@ const TotalFields = (props: {
         type="number"
         onChange={(e) => onChangeTip(e.target.value)}
         InputProps={{
+          startAdornment: <InputAdornment position="start">$</InputAdornment>,
+        }}
+      />
+      <TextField
+        variant="standard"
+        placeholder="Total"
+        type="number"
+        value={totals.subtotal + totals.tip + totals.tax}
+        InputProps={{
+          readOnly: true,
           startAdornment: <InputAdornment position="start">$</InputAdornment>,
         }}
       />
