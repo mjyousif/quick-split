@@ -13,47 +13,41 @@ import {
   TextField,
 } from "@mui/material";
 import { useState } from "react";
-class Entry {
+
+interface Entry {
   id: number;
   name: string;
   amount: number;
-
-  constructor(id: number, name: string, amount: number) {
-    this.id = id;
-    this.name = name;
-    this.amount = amount;
-  }
 }
 
-function listReducer(list: Entry[], action: any) {
+enum ActionType {
+  Added = "added",
+  Changed = "changed",
+  Deleted = "deleted",
+}
+
+type Action =
+  | { type: ActionType.Added; id: number }
+  | { type: ActionType.Changed; entry: Entry }
+  | { type: ActionType.Deleted; id: number };
+
+function listReducer(list: Entry[], action: Action): Entry[] {
   switch (action.type) {
-    case "added": {
-      list.push({
-        id: action.id,
-        name: "",
-        amount: 0.0,
-      });
-      break;
-    }
-    case "changed": {
-      const index = list.findIndex((t) => t.id === action.entry.id);
-      list[index] = action.entry;
-      break;
-    }
-    case "deleted": {
-      return list.filter((t) => t.id !== action.id);
-    }
-    default: {
-      throw Error("Unknown action: " + action.type);
-    }
+    case ActionType.Added:
+      return [...list, { id: action.id, name: "", amount: 0.0 }];
+    case ActionType.Changed:
+      return list.map((entry) =>
+        entry.id === action.entry.id ? action.entry : entry
+      );
+    case ActionType.Deleted:
+      return list.filter((entry) => entry.id !== action.id);
+    default:
+      throw new Error("Unknown action");
   }
 }
 
-const calculateTotalAmount = (entries: Entry[]) =>
-  entries.reduce((accumulator, current) => {
-    accumulator += current.amount;
-    return accumulator;
-  }, 0);
+const calculateTotalAmount = (entries: Entry[]): number =>
+  entries.reduce((accumulator, current) => accumulator + current.amount, 0);
 
 let id = 1;
 const App = () => {
@@ -64,21 +58,21 @@ const App = () => {
   const [entries, dispatch] = useImmerReducer(listReducer, initialList);
   function addEntry() {
     dispatch({
-      type: "added",
+      type: ActionType.Added,
       id: id++,
     });
   }
 
   function editEntry(entry: Entry) {
     dispatch({
-      type: "changed",
+      type: ActionType.Changed,
       entry: entry,
     });
   }
 
   function deleteEntry(id: number) {
     dispatch({
-      type: "deleted",
+      type: ActionType.Deleted,
       id: id,
     });
   }
@@ -128,7 +122,7 @@ const PersonalProportions = (props: { entries: Entry[]; totals: any }) => {
         </TableHead>
         <TableBody>
           {entries.map((entry) => (
-            <TableRow>
+            <TableRow key={entry.id}>
               <TableCell>{entry.name}</TableCell>
               <TableCell align="right">
                 {(
@@ -146,9 +140,9 @@ const PersonalProportions = (props: { entries: Entry[]; totals: any }) => {
 
 const TotalFields = (props: {
   total: number;
-  onSetTotal: Function;
-  onSetTax: Function;
-  onSetTip: Function;
+  onSetTotal: (value: number) => void;
+  onSetTax: (value: number) => void;
+  onSetTip: (value: number) => void;
 }) => {
   const { total, onSetTotal, onSetTax, onSetTip } = props;
 
@@ -199,32 +193,24 @@ const TotalFields = (props: {
 
 const NameList = (props: {
   entries: Entry[];
-  onAddEntry: Function;
-  onEditEntry: Function;
-  onDeleteEntry: Function;
+  onAddEntry: () => void;
+  onEditEntry: (entry: Entry) => void;
+  onDeleteEntry: (id: number) => void;
 }) => {
   const { entries, onAddEntry, onEditEntry, onDeleteEntry } = props;
-  const listGroupItems = entries.map((entry) => {
-    return (
-      <NameField
-        entry={entry}
-        onEditEntry={onEditEntry}
-        onDeleteEntry={onDeleteEntry}
-      />
-    );
-  });
 
   return (
     <>
       <Stack>
-        {listGroupItems}
-        <Button
-          onClick={() => {
-            onAddEntry();
-          }}
-        >
-          Add group member
-        </Button>
+        {entries.map((entry) => (
+          <NameField
+            key={entry.id}
+            entry={entry}
+            onEditEntry={onEditEntry}
+            onDeleteEntry={onDeleteEntry}
+          />
+        ))}
+        <Button onClick={onAddEntry}>Add group member</Button>
       </Stack>
     </>
   );
@@ -232,8 +218,8 @@ const NameList = (props: {
 
 const NameField = (props: {
   entry: Entry;
-  onEditEntry: Function;
-  onDeleteEntry: Function;
+  onEditEntry: (entry: Entry) => void;
+  onDeleteEntry: (id: number) => void;
 }) => {
   const { entry, onEditEntry, onDeleteEntry } = props;
   const { name, amount } = entry;
@@ -245,6 +231,7 @@ const NameField = (props: {
   const onChangeAmount = (value: string) => {
     onEditEntry({ ...entry, amount: Number(value) });
   };
+
   return (
     <Stack direction="row">
       <TextField
@@ -267,6 +254,6 @@ const NameField = (props: {
   );
 };
 
-const initialList: Entry[] = [new Entry(0, "Bloon", 2)];
+const initialList: Entry[] = [{ id: 0, name: "Bloon", amount: 2 }];
 
 export default App;
