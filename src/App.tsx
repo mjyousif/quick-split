@@ -3,6 +3,8 @@ import {
   Button,
   Container,
   InputAdornment,
+  Link,
+  MobileStepper,
   Stack,
   Table,
   TableBody,
@@ -11,8 +13,10 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
 
 interface Entry {
   id: number;
@@ -54,6 +58,7 @@ const App = () => {
   const [subtotal, setSubtotal] = useState(0);
   const [tax, setTax] = useState(0);
   const [tip, setTip] = useState(0);
+  const [activeStep, setActiveStep] = useState(0);
 
   const [entries, dispatch] = useImmerReducer(listReducer, initialList);
   function addEntry() {
@@ -82,6 +87,33 @@ const App = () => {
     setSubtotal(newSubtotal);
   }, [entries]);
 
+  const steps = ["Name List", "Total Fields", "Personal Proportions"];
+  const maxSteps = steps.length;
+
+  const stepComponents = [
+    <NameList
+      entries={entries}
+      onAddEntry={addEntry}
+      onEditEntry={editEntry}
+      onDeleteEntry={deleteEntry}
+    />,
+    <TotalFields
+      totals={{ subtotal, tax, tip }}
+      onSetSubtotal={setSubtotal}
+      onSetTax={setTax}
+      onSetTip={setTip}
+    />,
+    <PersonalProportions entries={entries} totals={{ subtotal, tax, tip }} />,
+  ];
+
+  const handleNext = () => {
+    setActiveStep((prevStep) => prevStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevStep) => prevStep - 1);
+  };
+
   return (
     <>
       <Container
@@ -91,25 +123,35 @@ const App = () => {
           justifyContent: "center",
         }}
       >
-        <NameList
-          entries={entries}
-          onAddEntry={addEntry}
-          onEditEntry={editEntry}
-          onDeleteEntry={deleteEntry}
-        />
-        <TotalFields
-          totals={{ subtotal, tax, tip }}
-          onSetSubtotal={setSubtotal}
-          onSetTax={setTax}
-          onSetTip={setTip}
-        />
-        <PersonalProportions
-          entries={entries}
-          totals={{ total: subtotal, tax, tip }}
+        <Stack>
+          <Typography>{steps[activeStep]}</Typography>
+          {stepComponents[activeStep]}
+        </Stack>
+        <MobileStepper
+          nextButton={
+            <Button
+              size="small"
+              onClick={handleNext}
+              disabled={activeStep === maxSteps - 1}
+            >
+              Next
+              {<KeyboardArrowRight />}
+            </Button>
+          }
+          backButton={
+            <Button
+              size="small"
+              onClick={handleBack}
+              disabled={activeStep === 0}
+            >
+              {<KeyboardArrowLeft />}
+              Back
+            </Button>
+          }
+          steps={maxSteps}
+          activeStep={activeStep}
         />
       </Container>
-      <div>{JSON.stringify(entries)}</div>
-      <div>{subtotal}</div>
     </>
   );
 };
@@ -117,7 +159,7 @@ const App = () => {
 const PersonalProportions = (props: { entries: Entry[]; totals: any }) => {
   const { entries, totals } = props;
 
-  const sum = totals.total;
+  const sum = totals.subtotal;
 
   return (
     <TableContainer>
@@ -126,20 +168,29 @@ const PersonalProportions = (props: { entries: Entry[]; totals: any }) => {
           <TableRow>
             <TableCell>Name</TableCell>
             <TableCell align="right">Owes</TableCell>
+            <TableCell>Venmo Request</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {entries.map((entry) => (
-            <TableRow key={entry.id}>
-              <TableCell>{entry.name}</TableCell>
-              <TableCell align="right">
-                {(
-                  (entry.amount / sum) *
-                  (sum + totals.tax + totals.tip)
-                ).toFixed(2)}
-              </TableCell>
-            </TableRow>
-          ))}
+          {entries.map((entry) => {
+            const amountOwed = (
+              (entry.amount / sum) *
+              (sum + totals.tax + totals.tip)
+            ).toFixed(2);
+            return (
+              <TableRow key={entry.id}>
+                <TableCell>{entry.name}</TableCell>
+                <TableCell align="right">${amountOwed}</TableCell>
+                <TableCell>
+                  <Link
+                    href={`https://account.venmo.com/pay?amount=${amountOwed}&note=QuickSplit%20request`}
+                  >
+                    Venmo
+                  </Link>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </TableContainer>
