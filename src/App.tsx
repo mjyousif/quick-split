@@ -12,7 +12,7 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Entry {
   id: number;
@@ -77,6 +77,11 @@ const App = () => {
     });
   }
 
+  useEffect(() => {
+    const newTotal = calculateTotalAmount(entries);
+    setTotal(newTotal);
+  }, [entries]);
+
   return (
     <>
       <Container
@@ -93,7 +98,7 @@ const App = () => {
           onDeleteEntry={deleteEntry}
         />
         <TotalFields
-          total={calculateTotalAmount(entries)}
+          total={total}
           onSetTotal={setTotal}
           onSetTax={setTax}
           onSetTip={setTip}
@@ -109,7 +114,7 @@ const App = () => {
 const PersonalProportions = (props: { entries: Entry[]; totals: any }) => {
   const { entries, totals } = props;
 
-  const sum = calculateTotalAmount(entries);
+  const sum = totals.total;
 
   return (
     <TableContainer>
