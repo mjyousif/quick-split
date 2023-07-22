@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   Container,
+  IconButton,
   MobileStepper,
   Stack,
   Toolbar,
@@ -16,6 +17,8 @@ import PersonalProportions from "./components/PersonalProportions";
 import TotalFields from "./components/TotalFields";
 import NameField from "./components/NameField";
 import Entry from "./models/Entry";
+import InfoIcon from "@mui/icons-material/Info";
+import InfoDialog from "./components/InfoDialog";
 
 enum ActionType {
   Added = "added",
@@ -52,6 +55,7 @@ const App = () => {
   const [tax, setTax] = useState(0);
   const [tip, setTip] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
+  const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
 
   const [entries, dispatch] = useImmerReducer(listReducer, initialList);
   function addEntry() {
@@ -131,6 +135,13 @@ const App = () => {
           <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
             Quick-Split
           </Typography>
+          <IconButton
+            onClick={() => {
+              setIsInfoDialogOpen(true);
+            }}
+          >
+            <InfoIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Offset />
@@ -163,6 +174,12 @@ const App = () => {
         }
         steps={maxSteps}
         activeStep={activeStep}
+      />
+      <InfoDialog
+        open={isInfoDialogOpen}
+        onClose={() => {
+          setIsInfoDialogOpen(false);
+        }}
       />
     </Box>
   );
