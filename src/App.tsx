@@ -2,28 +2,16 @@ import { useImmerReducer } from "use-immer";
 import {
   Button,
   Container,
-  InputAdornment,
-  Link,
   MobileStepper,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
-import generateVenmoUrl from "./venmo";
-
-interface Entry {
-  id: number;
-  name: string;
-  amount: number;
-}
+import PersonalProportions from "./components/PersonalProportions";
+import TotalFields from "./components/TotalFields";
+import NameField from "./components/NameField";
+import Entry from "./models/Entry";
 
 enum ActionType {
   Added = "added",
@@ -157,106 +145,6 @@ const App = () => {
   );
 };
 
-const PersonalProportions = (props: { entries: Entry[]; totals: any }) => {
-  const { entries, totals } = props;
-
-  const sum = totals.subtotal;
-
-  return (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell align="right">Owes</TableCell>
-            <TableCell>Venmo Request</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {entries.map((entry) => {
-            const amountOwed = (
-              (entry.amount / sum) *
-              (sum + totals.tax + totals.tip)
-            ).toFixed(2);
-            return (
-              <TableRow key={entry.id}>
-                <TableCell>{entry.name}</TableCell>
-                <TableCell align="right">${amountOwed}</TableCell>
-                <TableCell>
-                  <Link href={generateVenmoUrl(amountOwed)}>Venmo</Link>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-};
-
-const TotalFields = (props: {
-  totals: any;
-  onSetSubtotal: (value: number) => void;
-  onSetTax: (value: number) => void;
-  onSetTip: (value: number) => void;
-}) => {
-  const { totals, onSetSubtotal, onSetTax, onSetTip } = props;
-
-  const onChangeSubtotal = (value: string) => {
-    onSetSubtotal(Number(value));
-  };
-  const onChangeTax = (value: string) => {
-    onSetTax(Number(value));
-  };
-  const onChangeTip = (value: string) => {
-    onSetTip(Number(value));
-  };
-
-  return (
-    <Stack>
-      <TextField
-        variant="standard"
-        placeholder="Subtotal"
-        type="number"
-        InputProps={{
-          readOnly: true,
-          startAdornment: <InputAdornment position="start">$</InputAdornment>,
-        }}
-        value={totals.subtotal}
-        onChange={(e) => onChangeSubtotal(e.target.value)}
-      />
-      <TextField
-        variant="standard"
-        placeholder="Tax"
-        type="number"
-        onChange={(e) => onChangeTax(e.target.value)}
-        InputProps={{
-          startAdornment: <InputAdornment position="start">$</InputAdornment>,
-        }}
-      />
-      <TextField
-        variant="standard"
-        placeholder="Tip"
-        type="number"
-        onChange={(e) => onChangeTip(e.target.value)}
-        InputProps={{
-          startAdornment: <InputAdornment position="start">$</InputAdornment>,
-        }}
-      />
-      <TextField
-        variant="standard"
-        placeholder="Total"
-        type="number"
-        value={totals.subtotal + totals.tip + totals.tax}
-        InputProps={{
-          readOnly: true,
-          startAdornment: <InputAdornment position="start">$</InputAdornment>,
-        }}
-      />
-    </Stack>
-  );
-};
-
 const NameList = (props: {
   entries: Entry[];
   onAddEntry: () => void;
@@ -279,44 +167,6 @@ const NameList = (props: {
         <Button onClick={onAddEntry}>Add group member</Button>
       </Stack>
     </>
-  );
-};
-
-const NameField = (props: {
-  entry: Entry;
-  onEditEntry: (entry: Entry) => void;
-  onDeleteEntry: (id: number) => void;
-}) => {
-  const { entry, onEditEntry, onDeleteEntry } = props;
-  const { name, amount } = entry;
-
-  const onChangeName = (newName: string) => {
-    onEditEntry({ ...entry, name: newName });
-  };
-
-  const onChangeAmount = (value: string) => {
-    onEditEntry({ ...entry, amount: Number(value) });
-  };
-
-  return (
-    <Stack direction="row">
-      <TextField
-        type="text"
-        placeholder="Name"
-        value={name}
-        onChange={(e) => onChangeName(e.target.value)}
-        variant="standard"
-      />
-      <TextField
-        value={amount}
-        type="number"
-        onChange={(e) => onChangeAmount(e.target.value)}
-        variant="standard"
-        InputProps={{
-          startAdornment: <InputAdornment position="start">$</InputAdornment>,
-        }}
-      />
-    </Stack>
   );
 };
 
