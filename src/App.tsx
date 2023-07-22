@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
+import generateVenmoUrl from "./venmo";
 
 interface Entry {
   id: number;
@@ -182,11 +183,7 @@ const PersonalProportions = (props: { entries: Entry[]; totals: any }) => {
                 <TableCell>{entry.name}</TableCell>
                 <TableCell align="right">${amountOwed}</TableCell>
                 <TableCell>
-                  <Link
-                    href={`https://account.venmo.com/pay?amount=${amountOwed}&note=QuickSplit%20request`}
-                  >
-                    Venmo
-                  </Link>
+                  <Link href={generateVenmoUrl(amountOwed)}>Venmo</Link>
                 </TableCell>
               </TableRow>
             );
@@ -323,6 +320,6 @@ const NameField = (props: {
   );
 };
 
-const initialList: Entry[] = [{ id: 0, name: "Bloon", amount: 2 }];
+const initialList: Entry[] = [{ id: 0, name: "", amount: 0 }];
 
 export default App;
