@@ -1,4 +1,5 @@
 import { Stack, TextField, InputAdornment } from "@mui/material";
+import CurrencyTextField from "./CurrencyTextField";
 
 const TotalFields = (props: {
   totals: any;
@@ -20,48 +21,25 @@ const TotalFields = (props: {
 
   return (
     <Stack>
-      <TextField
-        variant="standard"
-        placeholder="Subtotal"
-        type="number"
-        InputProps={{
-          readOnly: true,
-          startAdornment: <InputAdornment position="start">$</InputAdornment>,
-        }}
-        value={totals.subtotal}
-        onChange={(e) => onChangeSubtotal(e.target.value)}
-        sx={{ margin: 1 }}
-      />
-      <TextField
-        variant="standard"
-        placeholder="Tax"
-        type="number"
-        onChange={(e) => onChangeTax(e.target.value)}
-        InputProps={{
-          startAdornment: <InputAdornment position="start">$</InputAdornment>,
-        }}
-        sx={{ margin: 1 }}
-      />
-      <TextField
-        variant="standard"
-        placeholder="Tip"
-        type="number"
-        onChange={(e) => onChangeTip(e.target.value)}
-        InputProps={{
-          startAdornment: <InputAdornment position="start">$</InputAdornment>,
-        }}
-        sx={{ margin: 1 }}
-      />
-      <TextField
-        variant="standard"
-        placeholder="Total"
-        type="number"
-        value={totals.subtotal + totals.tip + totals.tax}
-        InputProps={{
-          readOnly: true,
-          startAdornment: <InputAdornment position="start">$</InputAdornment>,
-        }}
-        sx={{ margin: 1 }}
+      <CurrencyTextField
+        amount={totals.subtotal}
+        onChangeAmount={onChangeSubtotal}
+        TextFieldProps={{ label: "Subtotal", InputProps: { readOnly: true } }}
+      />{" "}
+      <CurrencyTextField
+        amount={totals.tax}
+        onChangeAmount={onChangeTax}
+        TextFieldProps={{ label: "Tax" }}
+      />{" "}
+      <CurrencyTextField
+        amount={totals.tip}
+        onChangeAmount={onChangeTip}
+        TextFieldProps={{ label: "Tip" }}
+      />{" "}
+      <CurrencyTextField
+        amount={totals.subtotal + totals.tip + totals.tax}
+        onChangeAmount={() => {}}
+        TextFieldProps={{ label: "Total", InputProps: { readOnly: true } }}
       />
     </Stack>
   );

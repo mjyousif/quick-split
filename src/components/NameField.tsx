@@ -1,6 +1,7 @@
 import { Stack, TextField, InputAdornment, IconButton } from "@mui/material";
 import Entry from "../models/Entry";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CurrencyTextField from "./CurrencyTextField";
 
 const NameField = (props: {
   entry: Entry;
@@ -31,16 +32,12 @@ const NameField = (props: {
         onChange={(e) => onChangeName(e.target.value)}
         variant="standard"
         sx={{ margin: 1 }}
+        label="Name"
       />
-      <TextField
-        value={amount}
-        type="number"
-        onChange={(e) => onChangeAmount(e.target.value)}
-        variant="standard"
-        InputProps={{
-          startAdornment: <InputAdornment position="start">$</InputAdornment>,
-        }}
-        sx={{ margin: 1 }}
+      <CurrencyTextField
+        amount={amount}
+        onChangeAmount={onChangeAmount}
+        TextFieldProps={{ label: "Amount Owed" }}
       />
       <IconButton onClick={(e) => onDeleteEntry(entry.id)}>
         <DeleteIcon />
