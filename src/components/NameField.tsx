@@ -18,9 +18,13 @@ const NameField = (props: {
     onEditEntry({ ...entry, amount: Number(value) });
   };
 
+  const isInvalid = !name;
+
   return (
     <Stack direction="row">
       <TextField
+        error={isInvalid}
+        helperText={isInvalid && "Name may not be empty"}
         type="text"
         placeholder="Name"
         value={name}

@@ -107,6 +107,10 @@ const App = () => {
     setActiveStep((prevStep) => prevStep - 1);
   };
 
+  const isNextActive =
+    activeStep !== maxSteps - 1 &&
+    !entries.some((entry) => entry.name.trim() === "");
+
   const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
   return (
@@ -145,11 +149,7 @@ const App = () => {
       </Container>{" "}
       <MobileStepper
         nextButton={
-          <Button
-            size="small"
-            onClick={handleNext}
-            disabled={activeStep === maxSteps - 1}
-          >
+          <Button size="small" onClick={handleNext} disabled={!isNextActive}>
             Next
             {<KeyboardArrowRight />}
           </Button>
