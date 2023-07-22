@@ -30,6 +30,7 @@ const TotalFields = (props: {
         }}
         value={totals.subtotal}
         onChange={(e) => onChangeSubtotal(e.target.value)}
+        sx={{ margin: 1 }}
       />
       <TextField
         variant="standard"
@@ -39,6 +40,7 @@ const TotalFields = (props: {
         InputProps={{
           startAdornment: <InputAdornment position="start">$</InputAdornment>,
         }}
+        sx={{ margin: 1 }}
       />
       <TextField
         variant="standard"
@@ -48,6 +50,7 @@ const TotalFields = (props: {
         InputProps={{
           startAdornment: <InputAdornment position="start">$</InputAdornment>,
         }}
+        sx={{ margin: 1 }}
       />
       <TextField
         variant="standard"
@@ -58,6 +61,7 @@ const TotalFields = (props: {
           readOnly: true,
           startAdornment: <InputAdornment position="start">$</InputAdornment>,
         }}
+        sx={{ margin: 1 }}
       />
     </Stack>
   );

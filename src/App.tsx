@@ -1,10 +1,14 @@
 import { useImmerReducer } from "use-immer";
 import {
+  AppBar,
+  Box,
   Button,
   Container,
   MobileStepper,
   Stack,
+  Toolbar,
   Typography,
+  styled,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
@@ -103,8 +107,28 @@ const App = () => {
     setActiveStep((prevStep) => prevStep - 1);
   };
 
+  const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
+
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        maxWidth: 768,
+        margin: "0 auto", // This centers the box horizontally
+        minHeight: "100vh", // This ensures the box takes the full height of the viewport
+        p: 2, // Add some padding to the box
+      }}
+    >
+      <AppBar>
+        <Toolbar>
+          <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
+            Quick-Split
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Offset />
       <Container
         sx={{
           display: "flex",
@@ -113,35 +137,33 @@ const App = () => {
         }}
       >
         <Stack>
-          <Typography>{steps[activeStep]}</Typography>
+          <Typography align="center" variant="h6">
+            {steps[activeStep]}
+          </Typography>
           {stepComponents[activeStep]}
         </Stack>
-        <MobileStepper
-          nextButton={
-            <Button
-              size="small"
-              onClick={handleNext}
-              disabled={activeStep === maxSteps - 1}
-            >
-              Next
-              {<KeyboardArrowRight />}
-            </Button>
-          }
-          backButton={
-            <Button
-              size="small"
-              onClick={handleBack}
-              disabled={activeStep === 0}
-            >
-              {<KeyboardArrowLeft />}
-              Back
-            </Button>
-          }
-          steps={maxSteps}
-          activeStep={activeStep}
-        />
-      </Container>
-    </>
+      </Container>{" "}
+      <MobileStepper
+        nextButton={
+          <Button
+            size="small"
+            onClick={handleNext}
+            disabled={activeStep === maxSteps - 1}
+          >
+            Next
+            {<KeyboardArrowRight />}
+          </Button>
+        }
+        backButton={
+          <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+            {<KeyboardArrowLeft />}
+            Back
+          </Button>
+        }
+        steps={maxSteps}
+        activeStep={activeStep}
+      />
+    </Box>
   );
 };
 
