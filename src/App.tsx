@@ -109,6 +109,7 @@ const App = () => {
 
   const isNextActive =
     activeStep !== maxSteps - 1 &&
+    entries.length > 0 &&
     !entries.some((entry) => entry.name.trim() === "");
 
   const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
