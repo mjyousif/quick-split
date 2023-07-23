@@ -37,7 +37,7 @@ function listReducer(list: Entry[], action: Action): Entry[] {
       return [...list, { id: action.id, name: "", amount: 0.0 }];
     case ActionType.Changed:
       return list.map((entry) =>
-        entry.id === action.entry.id ? action.entry : entry
+        entry.id === action.entry.id ? action.entry : entry,
       );
     case ActionType.Deleted:
       return list.filter((entry) => entry.id !== action.id);
