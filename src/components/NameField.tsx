@@ -1,4 +1,4 @@
-import { Stack, TextField, InputAdornment, IconButton } from "@mui/material";
+import { Stack, TextField, IconButton } from "@mui/material";
 import Entry from "../models/Entry";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CurrencyTextField from "./CurrencyTextField";

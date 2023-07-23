@@ -1,4 +1,4 @@
-import { Stack, TextField, InputAdornment } from "@mui/material";
+import { Stack } from "@mui/material";
 import CurrencyTextField from "./CurrencyTextField";
 
 const TotalFields = (props: {
