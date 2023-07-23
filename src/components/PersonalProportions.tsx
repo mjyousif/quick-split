@@ -8,12 +8,14 @@ import {
   Link,
 } from "@mui/material";
 import generateVenmoUrl from "../utilities/venmo";
-import Entry from "../models/Entry";
+import type Entry from "../models/Entry";
+import type Totals from "../models/Totals";
 
-const PersonalProportions = (props: { entries: Entry[]; totals: any }) => {
+const PersonalProportions = (props: {
+  entries: Entry[];
+  totals: Totals;
+}): React.ReactNode => {
   const { entries, totals } = props;
-
-  const sum = totals.subtotal;
 
   return (
     <TableContainer>
@@ -28,8 +30,8 @@ const PersonalProportions = (props: { entries: Entry[]; totals: any }) => {
         <TableBody>
           {entries.map((entry) => {
             const amountOwed = (
-              (entry.amount / sum) *
-              (sum + totals.tax + totals.tip)
+              (entry.amount / totals.subtotal) *
+              (totals.subtotal + totals.tax + totals.tip)
             ).toFixed(2);
             return (
               <TableRow key={entry.id}>

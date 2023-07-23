@@ -15,10 +15,10 @@ import { useEffect, useState } from "react";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
 import PersonalProportions from "./components/PersonalProportions";
 import TotalFields from "./components/TotalFields";
-import NameField from "./components/NameField";
-import Entry from "./models/Entry";
+import type Entry from "./models/Entry";
 import InfoIcon from "@mui/icons-material/Info";
 import InfoDialog from "./components/InfoDialog";
+import NameList from "./components/NameList";
 
 enum ActionType {
   Added = "added",
@@ -50,7 +50,7 @@ const calculateSubtotalAmount = (entries: Entry[]): number =>
   entries.reduce((accumulator, current) => accumulator + current.amount, 0);
 
 let id = 1;
-const App = () => {
+const App = (): React.ReactNode => {
   const [subtotal, setSubtotal] = useState(0);
   const [tax, setTax] = useState(0);
   const [tip, setTip] = useState(0);
@@ -58,24 +58,24 @@ const App = () => {
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
 
   const [entries, dispatch] = useImmerReducer(listReducer, initialList);
-  function addEntry() {
+  function addEntry(): void {
     dispatch({
       type: ActionType.Added,
       id: id++,
     });
   }
 
-  function editEntry(entry: Entry) {
+  function editEntry(entry: Entry): void {
     dispatch({
       type: ActionType.Changed,
-      entry: entry,
+      entry,
     });
   }
 
-  function deleteEntry(id: number) {
+  function deleteEntry(id: number): void {
     dispatch({
       type: ActionType.Deleted,
-      id: id,
+      id,
     });
   }
 
@@ -89,25 +89,31 @@ const App = () => {
 
   const stepComponents = [
     <NameList
+      key="nameList"
       entries={entries}
       onAddEntry={addEntry}
       onEditEntry={editEntry}
       onDeleteEntry={deleteEntry}
     />,
     <TotalFields
+      key="totalFields"
       totals={{ subtotal, tax, tip }}
       onSetSubtotal={setSubtotal}
       onSetTax={setTax}
       onSetTip={setTip}
     />,
-    <PersonalProportions entries={entries} totals={{ subtotal, tax, tip }} />,
+    <PersonalProportions
+      key="personalProportions"
+      entries={entries}
+      totals={{ subtotal, tax, tip }}
+    />,
   ];
 
-  const handleNext = () => {
+  const handleNext = (): void => {
     setActiveStep((prevStep) => prevStep + 1);
   };
 
-  const handleBack = () => {
+  const handleBack = (): void => {
     setActiveStep((prevStep) => prevStep - 1);
   };
 
@@ -182,31 +188,6 @@ const App = () => {
         }}
       />
     </Box>
-  );
-};
-
-const NameList = (props: {
-  entries: Entry[];
-  onAddEntry: () => void;
-  onEditEntry: (entry: Entry) => void;
-  onDeleteEntry: (id: number) => void;
-}) => {
-  const { entries, onAddEntry, onEditEntry, onDeleteEntry } = props;
-
-  return (
-    <>
-      <Stack>
-        {entries.map((entry) => (
-          <NameField
-            key={entry.id}
-            entry={entry}
-            onEditEntry={onEditEntry}
-            onDeleteEntry={onDeleteEntry}
-          />
-        ))}
-        <Button onClick={onAddEntry}>Add group member</Button>
-      </Stack>
-    </>
   );
 };
 

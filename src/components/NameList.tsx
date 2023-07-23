@@ -1,5 +1,5 @@
 import { Stack, Button } from "@mui/material";
-import Entry from "../models/Entry";
+import type Entry from "../models/Entry";
 import NameField from "./NameField";
 
 const NameList = (props: {
@@ -7,7 +7,7 @@ const NameList = (props: {
   onAddEntry: () => void;
   onEditEntry: (entry: Entry) => void;
   onDeleteEntry: (id: number) => void;
-}) => {
+}): React.ReactNode => {
   const { entries, onAddEntry, onEditEntry, onDeleteEntry } = props;
 
   return (
