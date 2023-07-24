@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/quick-split/static/js/main.9ed3573d.js",
+    "main.js": "/quick-split/static/js/main.2aa0f86b.js",
     "index.html": "/quick-split/index.html",
-    "main.9ed3573d.js.map": "/quick-split/static/js/main.9ed3573d.js.map"
+    "main.2aa0f86b.js.map": "/quick-split/static/js/main.2aa0f86b.js.map"
   },
   "entrypoints": [
-    "static/js/main.9ed3573d.js"
+    "static/js/main.2aa0f86b.js"
   ]
 }
