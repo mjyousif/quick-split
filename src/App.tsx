@@ -37,7 +37,7 @@ function listReducer(list: Entry[], action: Action): Entry[] {
       return [...list, { id: action.id, name: "", amount: 0.0 }];
     case ActionType.Changed:
       return list.map((entry) =>
-        entry.id === action.entry.id ? action.entry : entry,
+        entry.id === action.entry.id ? action.entry : entry
       );
     case ActionType.Deleted:
       return list.filter((entry) => entry.id !== action.id);
@@ -50,7 +50,7 @@ const calculateSubtotalAmount = (entries: Entry[]): number =>
   entries.reduce((accumulator, current) => accumulator + current.amount, 0);
 
 let id = 1;
-const App = (): React.ReactNode => {
+const App = (): JSX.Element => {
   const [subtotal, setSubtotal] = useState(0);
   const [tax, setTax] = useState(0);
   const [tip, setTip] = useState(0);
@@ -120,7 +120,8 @@ const App = (): React.ReactNode => {
   const isNextActive =
     activeStep !== maxSteps - 1 &&
     entries.length > 0 &&
-    !entries.some((entry) => entry.name.trim() === "");
+    !entries.some((entry) => entry.name.trim() === "") &&
+    !entries.some((entry) => entry.amount === 0);
 
   const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 

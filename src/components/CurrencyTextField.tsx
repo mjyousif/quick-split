@@ -7,7 +7,7 @@ interface CurrencyTextFieldProps {
   TextFieldProps?: TextFieldProps;
 }
 
-const CurrencyTextField = (props: CurrencyTextFieldProps): React.ReactNode => {
+const CurrencyTextField = (props: CurrencyTextFieldProps): JSX.Element => {
   const { amount, onChangeAmount, TextFieldProps } = props;
   const [displayedValue, setDisplayedValue] = useState(amount.toFixed(2));
   useEffect(() => {

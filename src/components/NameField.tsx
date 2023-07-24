@@ -7,7 +7,7 @@ const NameField = (props: {
   entry: Entry;
   onEditEntry: (entry: Entry) => void;
   onDeleteEntry: (id: number) => void;
-}): React.ReactNode => {
+}): JSX.Element => {
   const { entry, onEditEntry, onDeleteEntry } = props;
   const { name, amount } = entry;
 
@@ -19,13 +19,14 @@ const NameField = (props: {
     onEditEntry({ ...entry, amount: Number(value) });
   };
 
-  const isInvalid = name === "";
+  const isInvalidName = name === "";
+  const isInvalidAmount = amount === 0;
 
   return (
     <Stack direction="row">
       <TextField
-        error={isInvalid}
-        helperText={isInvalid && "Name may not be empty"}
+        error={isInvalidName}
+        helperText={isInvalidName && "Name may not be empty"}
         type="text"
         placeholder="Name"
         value={name}
@@ -39,7 +40,11 @@ const NameField = (props: {
       <CurrencyTextField
         amount={amount}
         onChangeAmount={onChangeAmount}
-        TextFieldProps={{ label: "Amount Owed" }}
+        TextFieldProps={{
+          label: "Amount Owed",
+          error: isInvalidAmount,
+          helperText: isInvalidAmount && "Amount owed must be greater than 0",
+        }}
       />
       <IconButton
         onClick={(e) => {

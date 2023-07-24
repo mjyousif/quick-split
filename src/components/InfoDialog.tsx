@@ -6,7 +6,7 @@ export interface InfoDialogProps {
   onClose: () => void;
 }
 
-const InfoDialog = (props: InfoDialogProps): React.ReactNode => {
+const InfoDialog = (props: InfoDialogProps): JSX.Element => {
   const { onClose, open } = props;
 
   const handleClose = (): void => {

@@ -14,7 +14,7 @@ import type Totals from "../models/Totals";
 const PersonalProportions = (props: {
   entries: Entry[];
   totals: Totals;
-}): React.ReactNode => {
+}): JSX.Element => {
   const { entries, totals } = props;
 
   return (

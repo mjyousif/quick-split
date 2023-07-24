@@ -7,7 +7,7 @@ const TotalFields = (props: {
   onSetSubtotal: (value: number) => void;
   onSetTax: (value: number) => void;
   onSetTip: (value: number) => void;
-}): React.ReactNode => {
+}): JSX.Element => {
   const { totals, onSetSubtotal, onSetTax, onSetTip } = props;
 
   const onChangeSubtotal = (value: number): void => {

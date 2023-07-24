@@ -7,7 +7,7 @@ const NameList = (props: {
   onAddEntry: () => void;
   onEditEntry: (entry: Entry) => void;
   onDeleteEntry: (id: number) => void;
-}): React.ReactNode => {
+}): JSX.Element => {
   const { entries, onAddEntry, onEditEntry, onDeleteEntry } = props;
 
   return (
